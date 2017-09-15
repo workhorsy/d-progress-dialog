@@ -19,7 +19,7 @@ int main() {
 		dialog.setPercent(percent);
 		percent += 20;
 		Thread.sleep(1.seconds);
-		stdout.writefln("percent: %s", percent);
+		//stdout.writefln("percent: %s", percent);
 	}
 
 	dialog.close();

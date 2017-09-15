@@ -6,7 +6,7 @@
 // FIXME: Rename to progress_dialog
 module progress_bar;
 
-import std.process : Pid, ProcessPipes, ProcessException, spawnProcess, pipeProcess, Redirect, wait;
+import std.process : ProcessPipes;
 import std.stdio;
 
 private bool isExecutable(string path) {
@@ -83,6 +83,8 @@ private bool showProgressBarWindows(string title, string message) {
 }
 */
 private ProcessPipes showProgressBarZenity(string title, string message) {
+	import std.process : ProcessPipes, ProcessException, pipeProcess, Redirect;
+
 	string[] paths = programPaths(["zenity"]);
 	if (paths.length < 1) {
 		return ProcessPipes.init;
@@ -99,10 +101,10 @@ private ProcessPipes showProgressBarZenity(string title, string message) {
 		"--modal",
 	];
 	ProcessPipes pipes;
-	//try {
+	try {
 		pipes = pipeProcess(args, Redirect.stdin | Redirect.stdout | Redirect.stderr);
-	//} catch (ProcessException) {
-	//}
+	} catch (ProcessException) {
+	}
 
 	return pipes;
 }
@@ -114,6 +116,7 @@ class ProgressBar {
 	}
 
 	bool show() {
+		import std.process : ProcessPipes;
 		import std.stdio : stderr;
 
 		bool did_show = false;
@@ -136,13 +139,14 @@ class ProgressBar {
 	}
 
 	void close() {
+		import std.process : wait;
 		import std.algorithm : map;
 		import std.array : array;
 		import std.conv : to;
 
 		this.setPercent(100);
 
-		stdout.writefln("!!! called close");
+		//stdout.writefln("!!! called close");
 
 		if (wait(_pipes.pid) != 0) {
 			throw new Exception("Failed to close dialog");
