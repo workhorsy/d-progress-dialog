@@ -93,10 +93,11 @@ class ProgressBarKDialog : ProgressBarBase {
 
 		string[] args = [
 			paths[0],
-			_message,
+			"--title",
+			_title,
 			"100",
 			"--progressbar",
-			"--title \"%s\"".format(_title),
+			_message,
 		];
 		ProcessPipes pipes;
 		try {
@@ -162,12 +163,47 @@ class ProgressBarKDialog : ProgressBarBase {
 			output = pipes.stdout.byLine.map!(n => n.to!string).array();
 			stdout.writefln("!!! setPercent output: %s", output);
 			stdout.flush();
-			throw new Exception("Failed to qdbus");
+			throw new Exception("Failed to set kdialog percent");
 		}
 	}
 
 	override void close() {
-		
+		import std.process : ProcessPipes, ProcessException, pipeProcess, Redirect, tryWait, wait;
+		import std.algorithm : map;
+		import std.array : array;
+		import std.conv : to;
+		import std.string : format;
+
+		this.setPercent(100);
+
+		string[] paths = programPaths(["qdbus"]);
+		if (paths.length < 1) {
+			return;
+		}
+
+		string[] args = [
+			paths[0],
+			_qdbus_id,
+			"/ProgressDialog",
+			"close",
+		];
+
+		ProcessPipes pipes;
+		try {
+			pipes = pipeProcess(args, Redirect.stdin | Redirect.stdout | Redirect.stderr);
+		} catch (ProcessException) {
+			return;
+		}
+
+		if (wait(pipes.pid) != 0) {
+			string[] output = pipes.stderr.byLine.map!(n => n.to!string).array();
+			stdout.writefln("!!! setPercent output: %s", output);
+			stdout.flush();
+			output = pipes.stdout.byLine.map!(n => n.to!string).array();
+			stdout.writefln("!!! setPercent output: %s", output);
+			stdout.flush();
+			throw new Exception("Failed to close kdialog");
+		}
 	}
 
 	string _qdbus_id;
