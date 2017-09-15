@@ -1,7 +1,7 @@
 {
 	"name": "example",
 	"targetType": "executable",
-	"sourceFiles": ["../../source/progress_bar.d"],
+	"sourceFiles": ["../../source/progress_dialog.d"],
 	"mainSourceFile": "example.d",
 
 	"dependencies": {

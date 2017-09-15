@@ -1,10 +1,10 @@
 {
-	"name": "d-progress-bar",
-	"description": "A simple progress bar for the D programming language",
+	"name": "d-progress-dialog",
+	"description": "A simple progress dialog for the D programming language",
 	"authors": [
 		"Matthew Brennan Jones <matthew.brennan.jones@gmail.com>",
 	],
-	"homepage": "https://github.com/workhorsy/d-progress-bar",
+	"homepage": "https://github.com/workhorsy/d-progress-dialog",
 	"copyright": "Copyright (c) 2017 Matthew Brennan Jones",
 	"license": "BSL-1.0",
 	"importPaths": ["source/"],
@@ -13,7 +13,7 @@
 	"configurations": [
 		{
 			"name": "default",
-			"targetName": "progress_bar",
+			"targetName": "progress_dialog",
 			"targetType": "staticLibrary",
 			"dependencies": {
 				"d-glob": "~>0.2.0",
@@ -21,7 +21,7 @@
 		},
 		{
 			"name": "unittest",
-			"targetName": "progress_bar-test",
+			"targetName": "progress_dialog-test",
 			"targetType": "executable",
 			"mainSourceFile": "test/main.d",
 			"dependencies": {

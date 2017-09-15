@@ -3,16 +3,16 @@
 
 
 int main() {
-	import progress_bar;
+	import progress_dialog : ProgressDialog;
 	import std.stdio : stdout, stderr;
 	import core.thread;
 
 	// Create the dialog
-	auto dialog = new ProgressBar("It's waitin' time!", "Waiting ...");
+	auto dialog = new ProgressDialog("It's waitin' time!", "Waiting ...");
 
-	// Show the progress bar
+	// Show the progress dialog
 	if (! dialog.show()) {
-		stderr.writefln("Failed to show progress bar.");
+		stderr.writefln("Failed to show progress dialog.");
 	}
 
 	// Update the progress for 10 seconds

@@ -1,10 +1,10 @@
 // Copyright (c) 2017 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
 // Boost Software License - Version 1.0
-// A simple progress bar for the D programming language
-// https://github.com/workhorsy/d-progress-bar
+// A simple progress dialog for the D programming language
+// https://github.com/workhorsy/d-progress-dialog
 
-// FIXME: Rename to progress_dialog
-module progress_bar;
+
+module progress_dialog;
 
 import std.process : ProcessPipes;
 import std.stdio;
@@ -63,7 +63,7 @@ private string[] programPaths(string[] program_names) {
 	return paths;
 }
 
-abstract class ProgressBarBase {
+abstract class ProgressDialogBase {
 	this(string title, string message) {
 		_title = title;
 		_message = message;
@@ -78,7 +78,7 @@ abstract class ProgressBarBase {
 	ProcessPipes _pipes;
 }
 
-class ProgressBarKDialog : ProgressBarBase {
+class ProgressDialogKDialog : ProgressDialogBase {
 	this(string title, string message) {
 		super(title, message);
 	}
@@ -217,7 +217,7 @@ class ProgressBarKDialog : ProgressBarBase {
 	string _qdbus_id;
 }
 
-class ProgressBarZenity : ProgressBarBase {
+class ProgressDialogZenity : ProgressDialogBase {
 	this(string title, string message) {
 		super(title, message);
 	}
@@ -299,7 +299,7 @@ class ProgressBarZenity : ProgressBarBase {
 }
 
 /*
-private bool showProgressBarWindows(string title, string message) {
+private bool showProgressDialogWindows(string title, string message) {
 	version (Windows) {
 		import core.runtime;
 		import core.sys.windows.windows;
@@ -319,12 +319,12 @@ private bool showProgressBarWindows(string title, string message) {
 }
 */
 
-class ProgressBar {
+class ProgressDialog {
 	this(string title, string message) {
-		if (ProgressBarZenity.isSupported()) {
-			_dialog = new ProgressBarZenity(title, message);
-		} else if (ProgressBarKDialog.isSupported()) {
-			_dialog = new ProgressBarKDialog(title, message);
+		if (ProgressDialogZenity.isSupported()) {
+			_dialog = new ProgressDialogZenity(title, message);
+		} else if (ProgressDialogKDialog.isSupported()) {
+			_dialog = new ProgressDialogKDialog(title, message);
 		}
 	}
 
@@ -340,5 +340,5 @@ class ProgressBar {
 		_dialog.close();
 	}
 
-	ProgressBarBase _dialog;
+	ProgressDialogBase _dialog;
 }
