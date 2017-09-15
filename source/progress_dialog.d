@@ -25,29 +25,6 @@ abstract class ProgressDialogBase {
 	ProcessPipes _pipes;
 }
 
-
-
-/*
-private bool showProgressDialogWindows(string title, string message) {
-	version (Windows) {
-		import core.runtime;
-		import core.sys.windows.windows;
-		import std.utf : toUTFz;
-
-		int flags = 0;
-
-		int status = MessageBox(NULL, message.toUTFz!(const(wchar)*), title.toUTFz!(const(wchar)*), MB_OK | flags);
-		if (status == 0) {
-			return false;
-		}
-
-		return false;
-	} else {
-		return false;
-	}
-}
-*/
-
 class ProgressDialog {
 	import progress_dialog_zenity : ProgressDialogZenity;
 	import progress_dialog_kdialog : ProgressDialogKDialog;
