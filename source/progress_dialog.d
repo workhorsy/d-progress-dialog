@@ -51,9 +51,12 @@ private bool showProgressDialogWindows(string title, string message) {
 class ProgressDialog {
 	import progress_dialog_zenity : ProgressDialogZenity;
 	import progress_dialog_kdialog : ProgressDialogKDialog;
+	import progress_dialog_win32 : ProgressDialogWin32;
 
 	this(string title, string message) {
-		if (ProgressDialogZenity.isSupported()) {
+		if (ProgressDialogWin32.isSupported()) {
+			_dialog = new ProgressDialogWin32(title, message);
+		} else if (ProgressDialogZenity.isSupported()) {
 			_dialog = new ProgressDialogZenity(title, message);
 		} else if (ProgressDialogKDialog.isSupported()) {
 			_dialog = new ProgressDialogKDialog(title, message);
