@@ -6,13 +6,12 @@
 
 module progress_dialog_zenity;
 
-import progress_dialog;
-import std.process : ProcessPipes;
-import std.stdio;
-import helpers;
+import progress_dialog : ProgressDialogBase;
 
 
 class ProgressDialogZenity : ProgressDialogBase {
+	import std.process : ProcessPipes;
+
 	this(string title, string message) {
 		super(title, message);
 	}
@@ -23,6 +22,7 @@ class ProgressDialogZenity : ProgressDialogBase {
 		import std.array : array;
 		import std.conv : to;
 		import std.string : format, split, strip;
+		import helpers : programPaths;
 
 		string[] paths = programPaths(["zenity"]);
 		if (paths.length < 1) {
@@ -73,6 +73,7 @@ class ProgressDialogZenity : ProgressDialogBase {
 		import std.algorithm : map;
 		import std.array : array;
 		import std.conv : to;
+		import std.stdio : stdout;
 
 		this.setPercent(100);
 
@@ -89,6 +90,7 @@ class ProgressDialogZenity : ProgressDialogBase {
 	}
 
 	static bool isSupported() {
+		import helpers : programPaths;
 		return programPaths(["zenity"]).length > 0;
 	}
 }

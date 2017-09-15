@@ -7,8 +7,6 @@
 module helpers;
 
 
-import std.stdio;
-
 bool isExecutable(string path) {
 	version (Windows) {
 		return true;

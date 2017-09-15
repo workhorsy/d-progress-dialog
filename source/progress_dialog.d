@@ -6,14 +6,11 @@
 
 module progress_dialog;
 
-import std.process : ProcessPipes;
-import std.stdio;
-import progress_dialog_zenity : ProgressDialogZenity;
-import progress_dialog_kdialog : ProgressDialogKDialog;
-import helpers;
 
 
 abstract class ProgressDialogBase {
+	import std.process : ProcessPipes;
+
 	this(string title, string message) {
 		_title = title;
 		_message = message;
@@ -52,6 +49,9 @@ private bool showProgressDialogWindows(string title, string message) {
 */
 
 class ProgressDialog {
+	import progress_dialog_zenity : ProgressDialogZenity;
+	import progress_dialog_kdialog : ProgressDialogKDialog;
+
 	this(string title, string message) {
 		if (ProgressDialogZenity.isSupported()) {
 			_dialog = new ProgressDialogZenity(title, message);
