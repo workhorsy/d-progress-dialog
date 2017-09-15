@@ -62,6 +62,117 @@ private string[] programPaths(string[] program_names) {
 
 	return paths;
 }
+
+abstract class ProgressBarBase {
+	bool show();
+	void setPercent(ulong percent);
+	void close();
+
+	string _title;
+	string _message;
+	ProcessPipes _pipes;
+}
+
+class ProgressBarKDialog : ProgressBarBase {
+	this(string title, string message) {
+		_title = title;
+		_message = message;
+	}
+
+	override bool show() {
+		import std.process : ProcessPipes, ProcessException, pipeProcess, Redirect, tryWait;
+		import std.algorithm : map;
+		import std.array : array;
+		import std.conv : to;
+		import std.string : format, split, strip;
+
+		string[] paths = programPaths(["kdialog"]);
+		if (paths.length < 1) {
+			return false;
+		}
+
+		string[] args = [
+			paths[0],
+			_message,
+			"100",
+			"--progressbar",
+			"--title \"%s\"".format(_title),
+		];
+		ProcessPipes pipes;
+		try {
+			pipes = pipeProcess(args, Redirect.stdin | Redirect.stdout | Redirect.stderr);
+		} catch (ProcessException) {
+			return false;
+		}
+
+		// Make sure the program did not terminate
+		if (tryWait(pipes.pid).terminated) {
+			return false;
+		}
+
+	///*
+		//string[] output = pipes.stderr.byLine.map!(n => n.to!string).array();
+		//stdout.writefln("!!! output: %s", output);
+		//stdout.flush();
+		string[] output = pipes.stdout.byLine.map!(n => n.to!string).array();
+		stdout.writefln("!!! show output: %s", output);
+		stdout.flush();
+		_qdbus_id = output[0].split("/ProgressDialog")[0].strip();
+		stdout.writefln("!!! _qdbus_id: %s", _qdbus_id);
+		stdout.flush();
+	//*/
+
+		_pipes = pipes;
+		return true;
+	}
+
+	override void setPercent(ulong percent) {
+		import std.process : ProcessPipes, ProcessException, pipeProcess, Redirect, tryWait, wait;
+		import std.algorithm : map;
+		import std.array : array;
+		import std.conv : to;
+		import std.string : format;
+
+		string[] paths = programPaths(["qdbus"]);
+		if (paths.length < 1) {
+			return;
+		}
+
+		string[] args = [
+			paths[0],
+			_qdbus_id,
+			"/ProgressDialog",
+			"Set",
+			"",
+			"value",
+			"%s".format(percent),
+		];
+
+		ProcessPipes pipes;
+		try {
+			pipes = pipeProcess(args, Redirect.stdin | Redirect.stdout | Redirect.stderr);
+		} catch (ProcessException) {
+			return;
+		}
+
+		if (wait(pipes.pid) != 0) {
+			string[] output = pipes.stderr.byLine.map!(n => n.to!string).array();
+			stdout.writefln("!!! setPercent output: %s", output);
+			stdout.flush();
+			output = pipes.stdout.byLine.map!(n => n.to!string).array();
+			stdout.writefln("!!! setPercent output: %s", output);
+			stdout.flush();
+			throw new Exception("Failed to qdbus");
+		}
+	}
+
+	override void close() {
+		
+	}
+
+	string _qdbus_id;
+}
+
 /*
 private bool showProgressBarWindows(string title, string message) {
 	version (Windows) {
@@ -120,15 +231,21 @@ class ProgressBar {
 		import std.stdio : stderr;
 
 		bool did_show = false;
-
-		//if (! did_show) {
-			//did_show = showProgressBarWindows(_title, _message);
-		//}
-
+/*
+		if (! did_show) {
+			_pipes = showProgressBarWindows(_title, _message);
+		}
+	*/
+/*
 		if (! did_show) {
 			_pipes = showProgressBarZenity(_title, _message);
 		}
-
+*/
+/*
+	if (! did_show) {
+		_pipes = showProgressBarKDialog(_title, _message);
+	}
+*/
 		return _pipes !is ProcessPipes.init;
 	}
 

@@ -3,12 +3,12 @@
 
 
 int main() {
-	import progress_bar : ProgressBar;
+	import progress_bar;
 	import std.stdio : stdout, stderr;
 	import core.thread;
 
 	// Create the dialog
-	auto dialog = new ProgressBar("It's waitin' time!", "Waiting ...");
+	auto dialog = new ProgressBarKDialog("It's waitin' time!", "Waiting ...");
 
 	// Show the progress bar
 	if (! dialog.show()) {
