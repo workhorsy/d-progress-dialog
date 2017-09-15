@@ -2,10 +2,8 @@
 A simple progress dialog for the D programming language
 
 Tries to make a progress dialog with:
-* MessageBoxW (Windows)
 * Zenity (Gtk/Gnome)
 * Kdialog (KDE)
-* gxmessage (X11)
 
 # Documentation
 
