@@ -210,6 +210,10 @@ class ProgressBarKDialog : ProgressBarBase {
 		}
 	}
 
+	static bool isSupported() {
+		return programPaths(["kdialog"]).length > 0 && programPaths(["qdbus"]).length > 0;
+	}
+
 	string _qdbus_id;
 }
 
@@ -288,6 +292,10 @@ class ProgressBarZenity : ProgressBarBase {
 		output = _pipes.stdout.byLine.map!(n => n.to!string).array();
 		stdout.writefln("!!! output: %s", output);
 	}
+
+	static bool isSupported() {
+		return programPaths(["zenity"]).length > 0;
+	}
 }
 
 /*
@@ -313,42 +321,24 @@ private bool showProgressBarWindows(string title, string message) {
 
 class ProgressBar {
 	this(string title, string message) {
-		_title = title;
-		_message = message;
+		if (ProgressBarZenity.isSupported()) {
+			_dialog = new ProgressBarZenity(title, message);
+		} else if (ProgressBarKDialog.isSupported()) {
+			_dialog = new ProgressBarKDialog(title, message);
+		}
 	}
 
 	bool show() {
-		import std.process : ProcessPipes;
-		import std.stdio : stderr;
-
-		bool did_show = false;
-/*
-		if (! did_show) {
-			_pipes = showProgressBarWindows(_title, _message);
-		}
-	*/
-/*
-		if (! did_show) {
-			_pipes = showProgressBarZenity(_title, _message);
-		}
-*/
-/*
-	if (! did_show) {
-		_pipes = showProgressBarKDialog(_title, _message);
-	}
-*/
-		return _pipes !is ProcessPipes.init;
+		return _dialog.show();
 	}
 
 	void setPercent(ulong percent) {
-
+		_dialog.setPercent(percent);
 	}
 
 	void close() {
-
+		_dialog.close();
 	}
 
-	string _title;
-	string _message;
-	ProcessPipes _pipes;
+	ProgressBarBase _dialog;
 }
