@@ -1,0 +1,10 @@
+{
+	"name": "example",
+	"targetType": "executable",
+	"sourceFiles": ["../../source/progress_bar.d"],
+	"mainSourceFile": "example.d",
+
+	"dependencies": {
+		"d-glob": "~>0.2.0",
+	},
+}
