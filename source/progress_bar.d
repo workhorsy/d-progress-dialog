@@ -64,6 +64,11 @@ private string[] programPaths(string[] program_names) {
 }
 
 abstract class ProgressBarBase {
+	this(string title, string message) {
+		_title = title;
+		_message = message;
+	}
+
 	bool show();
 	void setPercent(ulong percent);
 	void close();
@@ -75,8 +80,7 @@ abstract class ProgressBarBase {
 
 class ProgressBarKDialog : ProgressBarBase {
 	this(string title, string message) {
-		_title = title;
-		_message = message;
+		super(title, message);
 	}
 
 	override bool show() {
@@ -209,6 +213,83 @@ class ProgressBarKDialog : ProgressBarBase {
 	string _qdbus_id;
 }
 
+class ProgressBarZenity : ProgressBarBase {
+	this(string title, string message) {
+		super(title, message);
+	}
+
+	override bool show() {
+		import std.process : ProcessPipes, ProcessException, pipeProcess, Redirect, tryWait;
+		import std.algorithm : map;
+		import std.array : array;
+		import std.conv : to;
+		import std.string : format, split, strip;
+
+		string[] paths = programPaths(["zenity"]);
+		if (paths.length < 1) {
+			return false;
+		}
+
+		string[] args = [
+			paths[0],
+			"--progress",
+			"--title=" ~ _title,
+			"--text=" ~ _message,
+			"--percentage=0",
+			"--auto-close",
+			"--no-cancel",
+			"--modal",
+		];
+		ProcessPipes pipes;
+		try {
+			pipes = pipeProcess(args, Redirect.stdin | Redirect.stdout | Redirect.stderr);
+		} catch (ProcessException) {
+			return false;
+		}
+
+		// Make sure the program did not terminate
+		//if (tryWait(pipes.pid).terminated) {
+		//	return false;
+		//}
+/*
+		string[] output = pipes.stderr.byLine.map!(n => n.to!string).array();
+		stdout.writefln("!!! show stderr: %s", output);
+		stdout.flush();
+		output = pipes.stdout.byLine.map!(n => n.to!string).array();
+		stdout.writefln("!!! show stdout: %s", output);
+		stdout.flush();
+*/
+		_pipes = pipes;
+		return true;
+	}
+
+	override void setPercent(ulong percent) {
+		import std.string : format;
+		_pipes.stdin.writef("%s\n".format(percent));
+		_pipes.stdin.flush();
+	}
+
+	override void close() {
+		import std.process : wait;
+		import std.algorithm : map;
+		import std.array : array;
+		import std.conv : to;
+
+		this.setPercent(100);
+
+		//stdout.writefln("!!! called close");
+
+		if (wait(_pipes.pid) != 0) {
+			throw new Exception("Failed to close dialog");
+		}
+
+		string[] output = _pipes.stderr.byLine.map!(n => n.to!string).array();
+		stdout.writefln("!!! output: %s", output);
+		output = _pipes.stdout.byLine.map!(n => n.to!string).array();
+		stdout.writefln("!!! output: %s", output);
+	}
+}
+
 /*
 private bool showProgressBarWindows(string title, string message) {
 	version (Windows) {
@@ -229,32 +310,6 @@ private bool showProgressBarWindows(string title, string message) {
 	}
 }
 */
-private ProcessPipes showProgressBarZenity(string title, string message) {
-	import std.process : ProcessPipes, ProcessException, pipeProcess, Redirect;
-
-	string[] paths = programPaths(["zenity"]);
-	if (paths.length < 1) {
-		return ProcessPipes.init;
-	}
-
-	string[] args = [
-		paths[0],
-		"--progress",
-		"--title=" ~ title,
-		"--text=" ~ message,
-		"--percentage=0",
-		"--auto-close",
-		"--no-cancel",
-		"--modal",
-	];
-	ProcessPipes pipes;
-	try {
-		pipes = pipeProcess(args, Redirect.stdin | Redirect.stdout | Redirect.stderr);
-	} catch (ProcessException) {
-	}
-
-	return pipes;
-}
 
 class ProgressBar {
 	this(string title, string message) {
@@ -286,29 +341,11 @@ class ProgressBar {
 	}
 
 	void setPercent(ulong percent) {
-		import std.string : format;
-		_pipes.stdin.writef("%s\n".format(percent));
-		_pipes.stdin.flush();
+
 	}
 
 	void close() {
-		import std.process : wait;
-		import std.algorithm : map;
-		import std.array : array;
-		import std.conv : to;
 
-		this.setPercent(100);
-
-		//stdout.writefln("!!! called close");
-
-		if (wait(_pipes.pid) != 0) {
-			throw new Exception("Failed to close dialog");
-		}
-
-		string[] output = _pipes.stderr.byLine.map!(n => n.to!string).array();
-		stdout.writefln("!!! output: %s", output);
-		output = _pipes.stdout.byLine.map!(n => n.to!string).array();
-		stdout.writefln("!!! output: %s", output);
 	}
 
 	string _title;

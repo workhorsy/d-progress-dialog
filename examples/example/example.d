@@ -8,7 +8,7 @@ int main() {
 	import core.thread;
 
 	// Create the dialog
-	auto dialog = new ProgressBarKDialog("It's waitin' time!", "Waiting ...");
+	auto dialog = new ProgressBarZenity("It's waitin' time!", "Waiting ...");
 
 	// Show the progress bar
 	if (! dialog.show()) {
