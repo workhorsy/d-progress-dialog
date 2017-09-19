@@ -15,7 +15,7 @@ int main() {
 		stderr.writefln("Failed to show progress dialog.");
 	}
 
-	// Update the progress for 10 seconds
+	// Update the progress for 5 seconds
 	ulong percent = 0;
 	while (percent < 100) {
 		dialog.setPercent(percent);

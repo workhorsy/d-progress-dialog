@@ -23,23 +23,17 @@ class ProgressDialogWin32 : ProgressDialogBase {
 	}
 
 	override bool show() {
-		//void exceptionHandler(Throwable e) { throw e; }
-		HINSTANCE hInstance;
-		HINSTANCE hPrevInstance;
-		LPSTR lpCmdLine;
-		int iCmdShow = 10;
-		//stdout.writefln("iCmdShow: %s", iCmdShow);
+		import core.thread : Thread;
 
 		try {
-			//Runtime.initialize();
-			// result = myWinMain(hInstance, hPrevInstance, lpCmdLine, iCmdShow);
-			int result = myWinMain(_title, _message, hInstance, hInstance, lpCmdLine, iCmdShow);
-			stderr.writefln("result: %s", result);
-			//Runtime.terminate();
-		} catch (Throwable err) {
-			stderr.writefln("%s", err);
+			auto composed = new Thread({
+				this.showInThread();
+			});
+			composed.start();
+		} catch (Throwable) {
 			return false;
 		}
+
 		return true;
 	}
 
@@ -56,6 +50,25 @@ class ProgressDialogWin32 : ProgressDialogBase {
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	private void showInThread() {
+		//void exceptionHandler(Throwable e) { throw e; }
+		HINSTANCE hInstance;
+		HINSTANCE hPrevInstance;
+		LPSTR lpCmdLine;
+		int iCmdShow = 10;
+		//stdout.writefln("iCmdShow: %s", iCmdShow);
+
+		try {
+			//Runtime.initialize();
+			// result = myWinMain(hInstance, hPrevInstance, lpCmdLine, iCmdShow);
+			int result = myWinMain(_title, _message, hInstance, hInstance, lpCmdLine, iCmdShow);
+			stderr.writefln("result: %s", result);
+			//Runtime.terminate();
+		} catch (Throwable err) {
+			stderr.writefln("%s", err);
 		}
 	}
 }
@@ -84,7 +97,8 @@ int myWinMain(string title, string message, HINSTANCE hInstance, HINSTANCE hPrev
 	hwnd = CreateWindow(
 		appName.toUTF16z,      // window class name
 		message.toUTF16z,     // window caption
-		WS_OVERLAPPEDWINDOW,  // window style
+		// WS_OVERLAPPEDWINDOW
+		WS_OVERLAPPED | WS_SYSMENU  | WS_DLGFRAME,  // window style
 		CW_USEDEFAULT,        // initial x position
 		CW_USEDEFAULT,        // initial y position
 		CW_USEDEFAULT,        // initial x size
@@ -110,6 +124,11 @@ extern(Windows) nothrow LRESULT WndProc(HWND hwnd, UINT message, WPARAM wParam, 
 	HDC hdc;
 	PAINTSTRUCT ps;
 	RECT rect;
+	try {
+		//stdout.writefln("!!! message: %s", message);
+		//stdout.flush();
+	} catch (Throwable) {
+	}
 
 	switch (message) {
 		case WM_CREATE:
