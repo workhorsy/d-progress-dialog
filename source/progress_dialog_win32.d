@@ -37,11 +37,18 @@ class ProgressDialogWin32 : ProgressDialogBase {
 		return true;
 	}
 
+	// FIXME: This passes the percent to the WndProc, but it does not display
+	// unless a repaint is triggered.
 	override void setPercent(ulong percent) {
-
+		static ulong _percent;
+		_percent = percent;
+		WPARAM param = cast(WPARAM)&_percent;
+		PostMessage(_hwnd, WM_USER, param, LPARAM.init);
+		//PostMessage(_hwnd, WM_PAINT, WPARAM.init, LPARAM.init);
 	}
 
 	override void close() {
+		this.setPercent(100);
 		PostMessage(_hwnd, WM_QUIT, WPARAM.init, LPARAM.init);
 	}
 
@@ -98,8 +105,8 @@ int myWinMain(ProgressDialogWin32 self, HINSTANCE hInstance, HINSTANCE hPrevInst
 	self._hwnd = CreateWindow(
 		appName.toUTF16z,      // window class name
 		self._message.toUTF16z,     // window caption
-		// WS_OVERLAPPEDWINDOW
-		WS_OVERLAPPED | WS_SYSMENU  | WS_DLGFRAME,  // window style
+		WS_OVERLAPPEDWINDOW,
+		//WS_OVERLAPPED | WS_SYSMENU  | WS_DLGFRAME,  // window style
 		CW_USEDEFAULT,        // initial x position
 		CW_USEDEFAULT,        // initial y position
 		CW_USEDEFAULT,        // initial x size
@@ -122,22 +129,39 @@ int myWinMain(ProgressDialogWin32 self, HINSTANCE hInstance, HINSTANCE hPrevInst
 }
 
 extern(Windows) nothrow LRESULT WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+	import std.conv : to;
+
 	HDC hdc;
 	PAINTSTRUCT ps;
 	RECT rect;
-	try {
-		//stdout.writefln("!!! message: %s", message);
-		//stdout.flush();
-	} catch (Throwable) {
-	}
+	const(wchar)* str_percent = "0";
+	ulong* data;
+	static ulong ulong_percent;
 
 	switch (message) {
+		case WM_USER:
+			printf("WM_USER\n");
+			try {
+				data = cast(ulong*) wParam;
+				ulong_percent = *data;
+				stdout.writefln("!!! message: %s", message);
+				stdout.writefln("!!! wParam: %s", wParam);
+				stdout.writefln("!!! data: %s", *data);
+				stdout.writefln("!!! ulong_percent: %s", ulong_percent);
+				stdout.flush();
+			} catch (Throwable) {
+			}
+			return 0;
 		case WM_PAINT:
 			hdc = BeginPaint(hwnd, &ps);
 			scope(exit) EndPaint(hwnd, &ps);
 
 			GetClientRect(hwnd, &rect);
-			DrawText(hdc, "FIXME: Put progress bar here", -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+			try {
+				str_percent = ulong_percent.to!string.toUTF16z;
+			} catch (Throwable) {
+			}
+			DrawText(hdc, str_percent, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 			return 0;
 		case WM_CREATE:
 			printf("WM_CREATE\n");
