@@ -42,7 +42,7 @@ class ProgressDialogWin32 : ProgressDialogBase {
 	}
 
 	override void close() {
-
+		PostMessage(_hwnd, WM_QUIT, WPARAM.init, LPARAM.init);
 	}
 
 	static bool isSupported() {
@@ -64,18 +64,19 @@ class ProgressDialogWin32 : ProgressDialogBase {
 		try {
 			//Runtime.initialize();
 			// result = myWinMain(hInstance, hPrevInstance, lpCmdLine, iCmdShow);
-			int result = myWinMain(_title, _message, hInstance, hInstance, lpCmdLine, iCmdShow);
+			int result = myWinMain(this, hInstance, hInstance, lpCmdLine, iCmdShow);
 			stderr.writefln("result: %s", result);
 			//Runtime.terminate();
 		} catch (Throwable err) {
 			stderr.writefln("%s", err);
 		}
 	}
+
+	HWND _hwnd;
 }
 
-int myWinMain(string title, string message, HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int iCmdShow) {
+int myWinMain(ProgressDialogWin32 self, HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int iCmdShow) {
 	string appName = "ProgressDialog";
-	HWND hwnd;
 	MSG  msg;
 	WNDCLASS wndclass;
 
@@ -94,9 +95,9 @@ int myWinMain(string title, string message, HINSTANCE hInstance, HINSTANCE hPrev
 		throw new Exception("This program requires Windows NT!");
 	}
 
-	hwnd = CreateWindow(
+	self._hwnd = CreateWindow(
 		appName.toUTF16z,      // window class name
-		message.toUTF16z,     // window caption
+		self._message.toUTF16z,     // window caption
 		// WS_OVERLAPPEDWINDOW
 		WS_OVERLAPPED | WS_SYSMENU  | WS_DLGFRAME,  // window style
 		CW_USEDEFAULT,        // initial x position
@@ -109,8 +110,8 @@ int myWinMain(string title, string message, HINSTANCE hInstance, HINSTANCE hPrev
 		NULL
 	);
 
-	ShowWindow(hwnd, iCmdShow);
-	UpdateWindow(hwnd);
+	ShowWindow(self._hwnd, iCmdShow);
+	UpdateWindow(self._hwnd);
 
 	while (GetMessage(&msg, NULL, 0, 0)) {
 		TranslateMessage(&msg);
@@ -131,8 +132,6 @@ extern(Windows) nothrow LRESULT WndProc(HWND hwnd, UINT message, WPARAM wParam, 
 	}
 
 	switch (message) {
-		case WM_CREATE:
-			return 0;
 		case WM_PAINT:
 			hdc = BeginPaint(hwnd, &ps);
 			scope(exit) EndPaint(hwnd, &ps);
@@ -140,8 +139,19 @@ extern(Windows) nothrow LRESULT WndProc(HWND hwnd, UINT message, WPARAM wParam, 
 			GetClientRect(hwnd, &rect);
 			DrawText(hdc, "FIXME: Put progress bar here", -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 			return 0;
+		case WM_CREATE:
+			printf("WM_CREATE\n");
+			return 0;
 		case WM_DESTROY:
+			printf("WM_DESTROY\n");
 			PostQuitMessage(0);
+			return 0;
+		case WM_QUIT:
+			printf("WM_QUIT\n");
+			return 0;
+		case WM_CLOSE:
+			printf("WM_CLOSE\n");
+			DestroyWindow(hwnd);
 			return 0;
 		default:
 	}
