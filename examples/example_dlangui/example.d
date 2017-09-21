@@ -3,32 +3,37 @@ module app;
 
 // reset && dub run --arch=x86_64 --build=debug
 import dlangui;
-import dlangui.widgets.progressbar;
 
 mixin APP_ENTRY_POINT;
 
 /// entry point for dlangui based application
 extern (C) int UIAppMain(string[] args) {
-    // create window
-    Window window = Platform.instance.createWindow("DlangUI example - HelloWorld", null);
+	import dlangui.widgets.progressbar : ProgressBarWidget;
 
-		auto vlayout = new VerticalLayout();
-		vlayout.margins = 20; // distance from window frame to vlayout background
-		vlayout.padding = 10; // distance from vlayout background bound to child widgets
-		vlayout.backgroundColor = 0xFFFFC0;
+	// create window
+	auto flags = WindowFlag.Modal;
+	Window window = Platform.instance.createWindow("Wating ...", null, flags);
 
-				auto pb = new ProgressBarWidget();
-				// set progress
-				pb.progress = 300; // 0 .. 1000
-				// set animation interval
-				pb.animationInterval = 50; // 50 milliseconds
+	auto vlayout = new VerticalLayout();
+	vlayout.margins = 20;
+	vlayout.padding = 10;
+	vlayout.backgroundColor = 0xFFFFC0;
 
-			vlayout.addChild(pb);
-				window.mainWidget = vlayout;
+	auto text = new TextWidget(null, "Loading ..."d);
 
-    // show window
-    window.show();
+	auto progress_bar = new ProgressBarWidget();
+	// set progress
+	progress_bar.progress = 300; // 0 .. 1000
+	// set animation interval
+	progress_bar.animationInterval = 50; // 50 milliseconds
 
-    // run message loop
-    return Platform.instance.enterMessageLoop();
+	vlayout.addChild(text);
+	vlayout.addChild(progress_bar);
+	window.mainWidget = vlayout;
+
+	// show window
+	window.show();
+
+	// run message loop
+	return Platform.instance.enterMessageLoop();
 }
