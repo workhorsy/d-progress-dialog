@@ -5,7 +5,6 @@ import progress_dialog : ProgressDialog;
 
 
 
-
 extern (C) int UIAppMain(string[] args) {
 	import core.thread;
 
@@ -35,38 +34,32 @@ extern (C) int UIAppMain(string[] args) {
 	return 0;
 }
 
-//mixin RUN_AS_MAIN!(mainActual);
 
-int main(string[] args) {
-	import derelict.sdl2.sdl : DerelictSDL2, SharedLibVersion, SharedLibLoadException;
+version (Windows) {
+	import dlangui;
+	mixin APP_ENTRY_POINT;
+} else {
+	int main(string[] args) {
+		import derelict.sdl2.sdl : DerelictSDL2, SharedLibVersion, SharedLibLoadException;
 
-	version (Windows) {
-		import dlangui;
-		mixin APP_ENTRY_POINT;
-		//extern (C) int UIAppMain(string[] args) {
-		//	return main_fn(args);
-		//}
-	} else version (Have_derelict_sdl2) {
-		bool can_sdl = false;
-		try {
-			DerelictSDL2.load(SharedLibVersion(2, 0, 2));
-			can_sdl = true;
-			stdout.writefln("SDL was found ...");
-		} catch (SharedLibLoadException) {
-			stdout.writefln("SDL was NOT found ...");
-		}
+		version (Have_derelict_sdl2) {
+			bool can_sdl = false;
+			try {
+				DerelictSDL2.load(SharedLibVersion(2, 0, 2));
+				can_sdl = true;
+				stdout.writefln("SDL was found ...");
+			} catch (SharedLibLoadException) {
+				stdout.writefln("SDL was NOT found ...");
+			}
 
-		if (can_sdl) {
-			import dlangui.platforms.sdl.sdlapp : sdlmain;
-			return sdlmain(args);
+			if (can_sdl) {
+				import dlangui.platforms.sdl.sdlapp : sdlmain;
+				return sdlmain(args);
+			} else {
+				return UIAppMain(args);
+			}
 		} else {
-			return UIAppMain(args);
+			return 0;
 		}
-	} else {
-		return 0;
 	}
 }
-
-//mixin FUCK!(UIAppMain);
-
-
