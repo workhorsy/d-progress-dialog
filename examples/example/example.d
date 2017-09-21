@@ -1,8 +1,9 @@
 
 
+import dlangui;
+mixin APP_ENTRY_POINT;
 
-
-int main() {
+extern (C) int UIAppMain(string[] args) {
 	import progress_dialog : ProgressDialog;
 	import std.stdio : stdout, stderr;
 	import core.thread;
@@ -13,6 +14,16 @@ int main() {
 	// Show the progress dialog
 	if (! dialog.show()) {
 		stderr.writefln("Failed to show progress dialog.");
+	}
+
+	// Run the window events in a thread
+	try {
+		auto composed = new Thread({
+			Platform.instance.enterMessageLoop();
+		});
+		composed.start();
+	} catch (Throwable) {
+		return false;
 	}
 
 	// Update the progress for 5 seconds
