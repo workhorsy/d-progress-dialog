@@ -33,19 +33,15 @@ class ProgressDialog {
 	import progress_dialog_dlangui : ProgressDialogDlangUI;
 
 	this(string title, string message) {
-/*
-		if (ProgressDialogWin32.isSupported()) {
+		/*if (ProgressDialogWin32.isSupported()) {
 			_dialog = new ProgressDialogWin32(title, message);
-		} else if (ProgressDialogZenity.isSupported()) {
+		} else */if (ProgressDialogZenity.isSupported()) {
 			_dialog = new ProgressDialogZenity(title, message);
 		} else if (ProgressDialogKDialog.isSupported()) {
 			_dialog = new ProgressDialogKDialog(title, message);
 		} else if (ProgressDialogDlangUI.isSupported()) {
-*/
 			_dialog = new ProgressDialogDlangUI(title, message);
-/*
 		}
-*/
 	}
 
 	bool show() {
