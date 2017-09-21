@@ -7,6 +7,36 @@
 module progress_dialog;
 
 
+mixin template RUN_MAIN() {
+	version (Windows) {
+		import dlangui;
+		mixin APP_ENTRY_POINT;
+	} else {
+		int main(string[] args) {
+			import derelict.sdl2.sdl : DerelictSDL2, SharedLibVersion, SharedLibLoadException;
+
+			version (Have_derelict_sdl2) {
+				bool can_sdl = false;
+				try {
+					DerelictSDL2.load(SharedLibVersion(2, 0, 2));
+					can_sdl = true;
+					stdout.writefln("SDL was found ...");
+				} catch (SharedLibLoadException) {
+					stdout.writefln("SDL was NOT found ...");
+				}
+
+				if (can_sdl) {
+					import dlangui.platforms.sdl.sdlapp : sdlmain;
+					return sdlmain(args);
+				} else {
+					return UIAppMain(args);
+				}
+			} else {
+				return 0;
+			}
+		}
+	}
+}
 
 abstract class ProgressDialogBase {
 	this(string title, string message) {
