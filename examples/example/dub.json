@@ -7,7 +7,7 @@
 
 
 	"dependencies": {
-		"d-glob": "~>0.2.0",
+		"d-glob": "~>0.3.0",
 		"dlangui": "~>0.9.141"
 	},
 
