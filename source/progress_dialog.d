@@ -45,16 +45,16 @@ class ProgressDialog {
 		return _dialog.show();
 	}
 
+	void run(void delegate() cb) {
+		_dialog.run(cb);
+	}
+
 	void setPercent(ulong percent) {
 		_dialog.setPercent(percent);
 	}
 
 	void close() {
 		_dialog.close();
-	}
-
-	void run(void delegate() cb) {
-		_dialog.run(cb);
 	}
 
 	ProgressDialogBase _dialog;
