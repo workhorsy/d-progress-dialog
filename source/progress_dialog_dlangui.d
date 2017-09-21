@@ -19,16 +19,17 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 	}
 
 	override bool show() {
+		import std.conv : to;
+
 		// create window
 		auto flags = WindowFlag.Modal;
-		_window = Platform.instance.createWindow("FIXME: Title here"d, null, flags);
+		_window = Platform.instance.createWindow(_title.to!dstring, null, flags, 300, 150);
 
 		auto vlayout = new VerticalLayout();
 		vlayout.margins = 20;
 		vlayout.padding = 10;
-		vlayout.backgroundColor = 0xFFFFC0;
 
-		auto text = new TextWidget(null, "FIXME: Message here"d);
+		auto text = new TextWidget(null, _message.to!dstring);
 
 		_progress_bar = new ProgressBarWidget();
 		_progress_bar.progress = 300;
