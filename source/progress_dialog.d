@@ -6,6 +6,7 @@
 
 module progress_dialog;
 
+bool is_sdl2_loadable = false;
 
 mixin template RUN_MAIN() {
 	version (Windows) {
@@ -14,18 +15,18 @@ mixin template RUN_MAIN() {
 	} else {
 		int main(string[] args) {
 			import derelict.sdl2.sdl : DerelictSDL2, SharedLibVersion, SharedLibLoadException;
+			import progress_dialog : is_sdl2_loadable;
 
 			version (Have_derelict_sdl2) {
-				bool can_sdl = false;
 				try {
 					DerelictSDL2.load(SharedLibVersion(2, 0, 2));
-					can_sdl = true;
+					is_sdl2_loadable = true;
 					stdout.writefln("SDL was found ...");
 				} catch (SharedLibLoadException) {
 					stdout.writefln("SDL was NOT found ...");
 				}
 
-				if (can_sdl) {
+				if (is_sdl2_loadable) {
 					import dlangui.platforms.sdl.sdlapp : sdlmain;
 					return sdlmain(args);
 				} else {
