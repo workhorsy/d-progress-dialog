@@ -1,11 +1,10 @@
 
 
-import dlangui;
-mixin APP_ENTRY_POINT;
+import std.stdio : stdout, stderr;
 
-extern (C) int UIAppMain(string[] args) {
+
+int mainActual(string[] args) {
 	import progress_dialog : ProgressDialog;
-	import std.stdio : stdout, stderr;
 	import core.thread;
 
 	// Create the dialog
@@ -32,4 +31,16 @@ extern (C) int UIAppMain(string[] args) {
 	});
 
 	return 0;
+}
+
+version (Windows) {
+	import dlangui;
+	mixin APP_ENTRY_POINT;
+	extern (C) int UIAppMain(string[] args) {
+		return mainActual(args);
+	}
+} else {
+	int main(string[] args) {
+		return mainActual(args);
+	}
 }
