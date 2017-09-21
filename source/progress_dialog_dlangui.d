@@ -54,7 +54,7 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 		Platform.instance.enterMessageLoop();
 	}
 
-	override void setPercent(ulong percent) { // FIXME: Change from ulong to int
+	override void setPercent(ulong percent) {
 		_percent = percent;
 		_progress_bar.progress = cast(int) (_percent * 10);
 	}
