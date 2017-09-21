@@ -3,7 +3,7 @@
 // A simple progress dialog for the D programming language
 // https://github.com/workhorsy/d-progress-dialog
 
-
+/*
 module progress_dialog_win32;
 
 import progress_dialog : ProgressDialogBase;
@@ -125,7 +125,7 @@ int myWinMain(ProgressDialogWin32 self, HINSTANCE hInstance, HINSTANCE hPrevInst
 		DispatchMessage(&msg);
 	}
 
-	return msg.wParam;
+	return 0;//msg.wParam;
 }
 
 extern(Windows) nothrow LRESULT WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
@@ -182,3 +182,4 @@ extern(Windows) nothrow LRESULT WndProc(HWND hwnd, UINT message, WPARAM wParam, 
 
 	return DefWindowProc(hwnd, message, wParam, lParam);
 }
+*/

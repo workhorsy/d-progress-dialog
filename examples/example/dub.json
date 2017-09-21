@@ -3,8 +3,20 @@
 	"targetType": "executable",
 	"sourcePaths": ["../../source/"],
 	"mainSourceFile": "example.d",
+	"sourceFiles-windows": ["../../source/win_app.def"],
+
 
 	"dependencies": {
 		"d-glob": "~>0.2.0",
+		"dlangui": "~>0.9.141"
 	},
+
+	"configurations": [
+		{
+		"name": "default",
+			"subConfigurations": {
+				"dlangui": "minimal"
+			}
+		}
+	]
 }
