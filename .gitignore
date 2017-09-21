@@ -7,4 +7,3 @@ lib/
 *.exe
 *.log
 examples/example/example
-examples/example_dlangui/example_dlangui
