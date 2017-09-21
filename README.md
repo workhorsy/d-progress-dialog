@@ -1,9 +1,12 @@
 # D Progress Dialog
 A simple progress dialog for the D programming language
 
+It should work without requiring any 3rd party GUI toolkits. But will work with what it can find on your OS at runtime.
+
 Tries to make a progress dialog with:
 * Zenity (Gtk/Gnome)
 * Kdialog (KDE)
+* DlangUI (win32/SDL2)
 
 # Documentation
 
