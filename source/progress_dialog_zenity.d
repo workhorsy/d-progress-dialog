@@ -97,5 +97,7 @@ class ProgressDialogZenity : ProgressDialogBase {
 		import helpers : programPaths;
 		return programPaths(["zenity"]).length > 0;
 	}
+
+	ProcessPipes _pipes;
 }
 

@@ -159,5 +159,6 @@ class ProgressDialogKDialog : ProgressDialogBase {
 	}
 
 	string _qdbus_id;
+	ProcessPipes _pipes;
 }
 

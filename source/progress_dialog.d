@@ -9,8 +9,6 @@ module progress_dialog;
 
 
 abstract class ProgressDialogBase {
-	import std.process : ProcessPipes;
-
 	this(string title, string message) {
 		_title = title;
 		_message = message;
@@ -23,7 +21,6 @@ abstract class ProgressDialogBase {
 
 	string _title;
 	string _message;
-	ProcessPipes _pipes;
 }
 
 class ProgressDialog {
