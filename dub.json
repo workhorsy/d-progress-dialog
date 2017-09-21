@@ -9,7 +9,6 @@
 	"license": "BSL-1.0",
 	"importPaths": ["source/"],
 	"targetPath": "lib",
-	"sourceFiles-windows": ["source/win_app.def"],
 
 	"configurations": [
 		{
@@ -19,9 +18,6 @@
 			"dependencies": {
 				"d-glob": "~>0.2.0",
 			},
-			"subConfigurations": {
-				"dlangui": "minimal"
-			}
 		},
 		{
 			"name": "unittest",
