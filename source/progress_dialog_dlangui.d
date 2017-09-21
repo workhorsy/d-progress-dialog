@@ -68,7 +68,15 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 		version (Windows) {
 			return true;
 		} else version (Have_derelict_sdl2) {
-			return true;
+				import derelict.sdl2.sdl : DerelictSDL2, SharedLibVersion, SharedLibLoadException;
+				try {
+					DerelictSDL2.load(SharedLibVersion(2, 0, 2));
+					stdout.writefln("SDL was found ...");
+					return true;
+				} catch (SharedLibLoadException) {
+					stdout.writefln("SDL was NOT found ...");
+					return false;
+				}
 		} else {
 			return false;
 		}
