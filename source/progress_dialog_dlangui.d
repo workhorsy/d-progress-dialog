@@ -19,8 +19,6 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 	}
 
 	override bool show() {
-//		import core.thread : Thread;
-
 		// create window
 		auto flags = WindowFlag.Modal;
 		_window = Platform.instance.createWindow("FIXME: Title here"d, null, flags);
@@ -42,18 +40,7 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 
 		// show window
 		_window.show();
-//		Platform.instance.enterMessageLoop();
-/*
-		// Run the window events in a thread
-		try {
-			auto composed = new Thread({
-				_retval = Platform.instance.enterMessageLoop();
-			});
-			composed.start();
-		} catch (Throwable) {
-			return false;
-		}
-*/
+
 		return true;
 	}
 
