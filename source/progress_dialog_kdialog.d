@@ -66,6 +66,10 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		return true;
 	}
 
+	override void run(void delegate() cb) {
+		cb();
+	}
+
 	override void setPercent(ulong percent) {
 		import std.process : ProcessPipes, ProcessException, pipeProcess, Redirect, tryWait, wait;
 		import std.algorithm : map;

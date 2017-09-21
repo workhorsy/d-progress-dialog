@@ -62,6 +62,10 @@ class ProgressDialogZenity : ProgressDialogBase {
 		return true;
 	}
 
+	override void run(void delegate() cb) {
+		cb();
+	}
+
 	override void setPercent(ulong percent) {
 		import std.string : format;
 		_pipes.stdin.writef("%s\n".format(percent));

@@ -17,6 +17,7 @@ abstract class ProgressDialogBase {
 	}
 
 	bool show();
+	void run(void delegate() cb);
 	void setPercent(ulong percent);
 	void close();
 
@@ -26,11 +27,9 @@ abstract class ProgressDialogBase {
 }
 
 class ProgressDialog {
-/*
 	import progress_dialog_zenity : ProgressDialogZenity;
 	import progress_dialog_kdialog : ProgressDialogKDialog;
-	import progress_dialog_win32 : ProgressDialogWin32;
-*/
+	//import progress_dialog_win32 : ProgressDialogWin32;
 	import progress_dialog_dlangui : ProgressDialogDlangUI;
 
 	this(string title, string message) {
@@ -59,6 +58,10 @@ class ProgressDialog {
 
 	void close() {
 		_dialog.close();
+	}
+
+	void run(void delegate() cb) {
+		_dialog.run(cb);
 	}
 
 	ProgressDialogBase _dialog;

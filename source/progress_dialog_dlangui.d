@@ -23,7 +23,7 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 
 		// create window
 		auto flags = WindowFlag.Modal;
-		Window window = Platform.instance.createWindow("FIXME: Title here"d, null, flags);
+		_window = Platform.instance.createWindow("FIXME: Title here"d, null, flags);
 
 		auto vlayout = new VerticalLayout();
 		vlayout.margins = 20;
@@ -38,10 +38,10 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 
 		vlayout.addChild(text);
 		vlayout.addChild(_progress_bar);
-		window.mainWidget = vlayout;
+		_window.mainWidget = vlayout;
 
 		// show window
-		window.show();
+		_window.show();
 //		Platform.instance.enterMessageLoop();
 /*
 		// Run the window events in a thread
@@ -57,6 +57,15 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 		return true;
 	}
 
+	override void run(void delegate() cb) {
+		import core.thread : Thread;
+
+		auto composed = new Thread(cb);
+		composed.start();
+
+		Platform.instance.enterMessageLoop();
+	}
+
 	override void setPercent(ulong percent) { // FIXME: Change from ulong to int
 		_percent = percent;
 		_progress_bar.progress = cast(int) (_percent * 10);
@@ -64,7 +73,7 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 
 	override void close() {
 		this.setPercent(100);
-		// FIXME: Close
+		_window.close();
 	}
 
 	static bool isSupported() {
@@ -80,4 +89,5 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 	int _retval;
 	ulong _percent;
 	ProgressBarWidget _progress_bar;
+	Window _window;
 }

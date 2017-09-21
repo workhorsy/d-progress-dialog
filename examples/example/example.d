@@ -16,7 +16,7 @@ extern (C) int UIAppMain(string[] args) {
 		stderr.writefln("Failed to show progress dialog.");
 	}
 
-	auto composed = new Thread({
+	dialog.run({
 		// Update the progress for 5 seconds
 		ulong percent = 0;
 		while (percent < 100) {
@@ -30,9 +30,6 @@ extern (C) int UIAppMain(string[] args) {
 		// Close the dialog
 		dialog.close();
 	});
-	composed.start();
-
-	Platform.instance.enterMessageLoop();
 
 	return 0;
 }
