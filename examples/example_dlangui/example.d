@@ -1,3 +1,4 @@
+
 module app;
 
 // reset && dub run --arch=x86_64 --build=debug
@@ -15,7 +16,7 @@ extern (C) int UIAppMain(string[] args) {
 		vlayout.margins = 20; // distance from window frame to vlayout background
 		vlayout.padding = 10; // distance from vlayout background bound to child widgets
 		vlayout.backgroundColor = 0xFFFFC0;
-		
+
 				auto pb = new ProgressBarWidget();
 				// set progress
 				pb.progress = 300; // 0 .. 1000
