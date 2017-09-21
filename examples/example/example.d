@@ -16,28 +16,23 @@ extern (C) int UIAppMain(string[] args) {
 		stderr.writefln("Failed to show progress dialog.");
 	}
 
-	// Run the window events in a thread
-	try {
-		auto composed = new Thread({
-			Platform.instance.enterMessageLoop();
-		});
-		composed.start();
-	} catch (Throwable) {
-		return false;
-	}
+	auto composed = new Thread({
+		// Update the progress for 5 seconds
+		ulong percent = 0;
+		while (percent < 100) {
+			dialog.setPercent(percent);
+			percent += 20;
+			Thread.sleep(1.seconds);
+			stdout.writefln("percent: %s", percent);
+			stdout.flush();
+		}
 
-	// Update the progress for 5 seconds
-	ulong percent = 0;
-	while (percent < 100) {
-		dialog.setPercent(percent);
-		percent += 20;
-		Thread.sleep(1.seconds);
-		stdout.writefln("percent: %s", percent);
-		stdout.flush();
-	}
+		// Close the dialog
+		dialog.close();
+	});
+	composed.start();
 
-	// Close the dialog
-	dialog.close();
+	Platform.instance.enterMessageLoop();
 
 	return 0;
 }
