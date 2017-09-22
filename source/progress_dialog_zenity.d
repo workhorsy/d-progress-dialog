@@ -16,7 +16,7 @@ class ProgressDialogZenity : ProgressDialogBase {
 		super(title, message);
 	}
 
-	override bool show() {
+	override void show(void delegate() cb) {
 		import std.process : ProcessPipes, ProcessException, pipeProcess, Redirect, tryWait;
 		import std.algorithm : map;
 		import std.array : array;
@@ -26,7 +26,8 @@ class ProgressDialogZenity : ProgressDialogBase {
 
 		string[] paths = programPaths(["zenity"]);
 		if (paths.length < 1) {
-			return false;
+			if (_on_error_cb) _on_error_cb(new Exception("Failed to find zenity"));
+			return;
 		}
 
 		string[] args = [
@@ -42,14 +43,17 @@ class ProgressDialogZenity : ProgressDialogBase {
 		ProcessPipes pipes;
 		try {
 			pipes = pipeProcess(args, Redirect.stdin | Redirect.stdout | Redirect.stderr);
-		} catch (ProcessException) {
-			return false;
+		} catch (ProcessException err) {
+			if (_on_error_cb) _on_error_cb(err);
+			return;
 		}
 
 		// Make sure the program did not terminate
-		//if (tryWait(pipes.pid).terminated) {
-		//	return false;
-		//}
+		if (tryWait(pipes.pid).terminated) {
+			if (_on_error_cb) _on_error_cb(new Exception("Failed to run zenity"));
+			return;
+		}
+
 /*
 		string[] output = pipes.stderr.byLine.map!(n => n.to!string).array();
 		stdout.writefln("!!! show stderr: %s", output);
@@ -59,11 +63,12 @@ class ProgressDialogZenity : ProgressDialogBase {
 		stdout.flush();
 */
 		_pipes = pipes;
-		return true;
-	}
 
-	override void run(void delegate() cb) {
-		cb();
+		try {
+			cb();
+		} catch (Throwable err) {
+			if (_on_error_cb) _on_error_cb(err);
+		}
 	}
 
 	override void setPercent(ulong percent) {

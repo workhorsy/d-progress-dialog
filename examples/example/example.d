@@ -11,12 +11,14 @@ extern (C) int UIAppMain(string[] args) {
 	// Create the dialog
 	auto dialog = new ProgressDialog("It's waitin' time!", "Waiting ...");
 
-	// Show the progress dialog
-	if (! dialog.show()) {
-		stderr.writefln("Failed to show progress dialog.");
-	}
+	// Set the error handler
+	dialog.onError((Throwable err) {
+		stderr.writefln("Failed to show progress dialog: %s", err);
+		dialog.close();
+	});
 
-	dialog.run({
+	// Show the progress dialog
+	dialog.show({
 		// Update the progress for 5 seconds
 		ulong percent = 0;
 		while (percent < 100) {

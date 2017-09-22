@@ -18,8 +18,9 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 		super(title, message);
 	}
 
-	override bool show() {
+	override void show(void delegate() cb) {
 		import std.conv : to;
+		import core.thread : Thread;
 
 		// create window
 		auto flags = WindowFlag.Modal;
@@ -42,13 +43,13 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 		// show window
 		_window.show();
 
-		return true;
-	}
-
-	override void run(void delegate() cb) {
-		import core.thread : Thread;
-
-		auto composed = new Thread(cb);
+		auto composed = new Thread({
+			try {
+				cb();
+			} catch (Throwable err) {
+				if (_on_error_cb) _on_error_cb(err);
+			}
+		});
 		composed.start();
 
 		Platform.instance.enterMessageLoop();

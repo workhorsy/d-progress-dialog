@@ -16,7 +16,7 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		super(title, message);
 	}
 
-	override bool show() {
+	override void show(void delegate() cb) {
 		import std.process : ProcessPipes, ProcessException, pipeProcess, Redirect, tryWait;
 		import std.algorithm : map;
 		import std.array : array;
@@ -27,7 +27,8 @@ class ProgressDialogKDialog : ProgressDialogBase {
 
 		string[] paths = programPaths(["kdialog"]);
 		if (paths.length < 1) {
-			return false;
+			if (_on_error_cb) _on_error_cb(new Exception("Failed to find kdialog"));
+			return;
 		}
 
 		string[] args = [
@@ -41,13 +42,15 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		ProcessPipes pipes;
 		try {
 			pipes = pipeProcess(args, Redirect.stdin | Redirect.stdout | Redirect.stderr);
-		} catch (ProcessException) {
-			return false;
+		} catch (ProcessException err) {
+			if (_on_error_cb) _on_error_cb(err);
+			return;
 		}
 
 		// Make sure the program did not terminate
 		if (tryWait(pipes.pid).terminated) {
-			return false;
+			if (_on_error_cb) _on_error_cb(new Exception("Failed to run kdialog"));
+			return;
 		}
 
 	///*
@@ -63,11 +66,12 @@ class ProgressDialogKDialog : ProgressDialogBase {
 	//*/
 
 		_pipes = pipes;
-		return true;
-	}
 
-	override void run(void delegate() cb) {
-		cb();
+		try {
+			cb();
+		} catch (Throwable err) {
+			if (_on_error_cb) _on_error_cb(err);
+		}
 	}
 
 	override void setPercent(ulong percent) {
@@ -81,6 +85,7 @@ class ProgressDialogKDialog : ProgressDialogBase {
 
 		string[] paths = programPaths(["qdbus"]);
 		if (paths.length < 1) {
+			if (_on_error_cb) _on_error_cb(new Exception("Failed to find qdbus"));
 			return;
 		}
 
@@ -97,7 +102,8 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		ProcessPipes pipes;
 		try {
 			pipes = pipeProcess(args, Redirect.stdin | Redirect.stdout | Redirect.stderr);
-		} catch (ProcessException) {
+		} catch (ProcessException err) {
+			if (_on_error_cb) _on_error_cb(err);
 			return;
 		}
 
@@ -108,7 +114,7 @@ class ProgressDialogKDialog : ProgressDialogBase {
 			output = pipes.stdout.byLine.map!(n => n.to!string).array();
 			stdout.writefln("!!! setPercent output: %s", output);
 			stdout.flush();
-			throw new Exception("Failed to set kdialog percent");
+			if (_on_error_cb) _on_error_cb(new Exception("Failed to set kdialog percent"));
 		}
 	}
 
@@ -125,6 +131,7 @@ class ProgressDialogKDialog : ProgressDialogBase {
 
 		string[] paths = programPaths(["qdbus"]);
 		if (paths.length < 1) {
+			if (_on_error_cb) _on_error_cb(new Exception("Failed to find qdbus"));
 			return;
 		}
 
@@ -138,7 +145,8 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		ProcessPipes pipes;
 		try {
 			pipes = pipeProcess(args, Redirect.stdin | Redirect.stdout | Redirect.stderr);
-		} catch (ProcessException) {
+		} catch (ProcessException err) {
+			if (_on_error_cb) _on_error_cb(err);
 			return;
 		}
 
@@ -149,7 +157,7 @@ class ProgressDialogKDialog : ProgressDialogBase {
 			output = pipes.stdout.byLine.map!(n => n.to!string).array();
 			stdout.writefln("!!! setPercent output: %s", output);
 			stdout.flush();
-			throw new Exception("Failed to close kdialog");
+			if (_on_error_cb) _on_error_cb(new Exception("Failed to close kdialog"));
 		}
 	}
 

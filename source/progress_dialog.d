@@ -47,13 +47,17 @@ abstract class ProgressDialogBase {
 		_message = message;
 	}
 
-	bool show();
-	void run(void delegate() cb);
+	void onError(void delegate(Throwable err) cb) {
+		_on_error_cb = cb;
+	}
+
+	void show(void delegate() cb);
 	void setPercent(ulong percent);
 	void close();
 
 	string _title;
 	string _message;
+	void delegate(Throwable err) _on_error_cb;
 }
 
 class ProgressDialog {
@@ -78,12 +82,12 @@ class ProgressDialog {
 		}
 	}
 
-	bool show() {
-		return _dialog.show();
+	void onError(void delegate(Throwable err) cb) {
+		_dialog._on_error_cb = cb;
 	}
 
-	void run(void delegate() cb) {
-		_dialog.run(cb);
+	void show(void delegate() cb) {
+		_dialog.show(cb);
 	}
 
 	void setPercent(ulong percent) {
