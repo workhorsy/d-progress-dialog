@@ -9,15 +9,17 @@ module progress_dialog;
 bool is_sdl2_loadable = false;
 
 mixin template RUN_MAIN() {
+	// On Windows use the normal dlangui main
 	version (Windows) {
 		import dlangui;
 		mixin APP_ENTRY_POINT;
+	// On Linux use a custom main that checks if SDL is installed
 	} else {
 		int main(string[] args) {
-			import derelict.sdl2.sdl : DerelictSDL2, SharedLibVersion, SharedLibLoadException;
-			import progress_dialog : is_sdl2_loadable;
-
+			// Figure out if the SDL2 libraries can be loaded
 			version (Have_derelict_sdl2) {
+				import derelict.sdl2.sdl : DerelictSDL2, SharedLibVersion, SharedLibLoadException;
+				import progress_dialog : is_sdl2_loadable;
 				try {
 					DerelictSDL2.load(SharedLibVersion(2, 0, 2));
 					is_sdl2_loadable = true;
@@ -25,15 +27,15 @@ mixin template RUN_MAIN() {
 				} catch (SharedLibLoadException) {
 					stdout.writefln("SDL was NOT found ...");
 				}
+			}
 
-				if (is_sdl2_loadable) {
-					import dlangui.platforms.sdl.sdlapp : sdlmain;
-					return sdlmain(args);
-				} else {
-					return UIAppMain(args);
-				}
+			// If SDL2 can be loaded, start the SDL2 main
+			if (is_sdl2_loadable) {
+				import dlangui.platforms.sdl.sdlapp : sdlmain;
+				return sdlmain(args);
+			// If not, use the normal main provided by the user
 			} else {
-				return 0;
+				return UIAppMain(args);
 			}
 		}
 	}
