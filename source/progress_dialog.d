@@ -46,7 +46,7 @@ extern (C) int UIAppMain(string[] args) {
 	// Show the progress dialog
 	dialog.show({
 		// Update the progress for 5 seconds
-		ulong percent = 0;
+		int percent = 0;
 		while (percent < 100) {
 			dialog.setPercent(percent);
 			percent += 20;
@@ -118,7 +118,7 @@ abstract class ProgressDialogBase {
 	}
 
 	void show(void delegate() cb);
-	void setPercent(ulong percent);
+	void setPercent(int percent);
 	void close();
 
 	string _title;
@@ -182,7 +182,7 @@ class ProgressDialog {
 	Params:
 	 percent = from 0 to 100
 	+/
-	void setPercent(ulong percent) {
+	void setPercent(int percent) {
 		_dialog.setPercent(percent);
 	}
 

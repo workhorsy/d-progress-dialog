@@ -39,8 +39,8 @@ class ProgressDialogWin32 : ProgressDialogBase {
 
 	// FIXME: This passes the percent to the WndProc, but it does not display
 	// unless a repaint is triggered.
-	override void setPercent(ulong percent) {
-		static ulong _percent;
+	override void setPercent(int percent) {
+		static int _percent;
 		_percent = percent;
 		WPARAM param = cast(WPARAM)&_percent;
 		PostMessage(_hwnd, WM_USER, param, LPARAM.init);

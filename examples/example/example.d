@@ -20,7 +20,7 @@ extern (C) int UIAppMain(string[] args) {
 	// Show the progress dialog
 	dialog.show({
 		// Update the progress for 5 seconds
-		ulong percent = 0;
+		int percent = 0;
 		while (percent < 100) {
 			dialog.setPercent(percent);
 			percent += 20;

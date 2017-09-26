@@ -55,9 +55,9 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 		Platform.instance.enterMessageLoop();
 	}
 
-	override void setPercent(ulong percent) {
+	override void setPercent(int percent) {
 		_percent = percent;
-		_progress_bar.progress = cast(int) (_percent * 10);
+		_progress_bar.progress = _percent * 10;
 	}
 
 	override void close() {
@@ -77,7 +77,7 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 	}
 
 	int _retval;
-	ulong _percent;
+	int _percent;
 	ProgressBarWidget _progress_bar;
 	Window _window;
 }
