@@ -3,7 +3,7 @@
 import std.stdio : stdout, stderr;
 import progress_dialog : ProgressDialog, RUN_MAIN;
 
-
+mixin RUN_MAIN;
 
 extern (C) int UIAppMain(string[] args) {
 	import core.thread;
@@ -35,6 +35,3 @@ extern (C) int UIAppMain(string[] args) {
 
 	return 0;
 }
-
-
-mixin RUN_MAIN;

@@ -4,9 +4,9 @@ A simple progress dialog for the D programming language
 It should work without requiring any 3rd party GUI toolkits. But will work with what it can find on your OS at runtime.
 
 Tries to make a progress dialog with:
+* DlangUI (win32 on Windows or SDL2 on Linux)
 * Zenity (Gtk/Gnome)
 * Kdialog (KDE)
-* DlangUI (win32/SDL2)
 
 # Documentation
 
