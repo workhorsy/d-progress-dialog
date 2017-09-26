@@ -71,8 +71,8 @@ bool is_sdl2_loadable = false;
 
 /++
 This should be called once at the start of a program. It generates the proper
-main function for your environment (win32/posix/dmail) and boot straps the
-main loopd for the GUI. This will call your UIAppMain function when ready.
+main function for your environment (win32/posix/dmain) and boot straps the
+main loop for the GUI. This will call your UIAppMain function when ready.
 +/
 mixin template RUN_MAIN() {
 	// On Windows use the normal dlangui main
@@ -142,7 +142,7 @@ class ProgressDialog {
 	 title = The string to show in the progress dialog title
 	 message = The string to show in the progress dialog body
 	Throws:
-	 If it fails to find any programs of libraries to make a progress dialog with.
+	 If it fails to find any programs or libraries to make a progress dialog with.
 	+/
 	this(string title, string message) {
 		/*if (ProgressDialogWin32.isSupported()) {
@@ -171,7 +171,7 @@ class ProgressDialog {
 
 	/++
 	Shows the progress dialog. Will run the callback in a thread and
-	block until it is closed or reaches 100%.
+	block until it is closed or percent reaches 100.
 	+/
 	void show(void delegate() cb) {
 		_dialog.show(cb);
