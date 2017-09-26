@@ -6,6 +6,26 @@
 
 module progress_dialog_helpers;
 
+import std.process : ProcessPipes;
+
+
+void logProgramOutput(ProcessPipes pipes, bool include_stderr) {
+	import std.algorithm : map;
+	import std.conv : to;
+	import std.stdio : stderr, stdout;
+	import std.array : array;
+	string[] output;
+
+	if (include_stderr) {
+		output = pipes.stderr.byLine.map!(n => n.to!string).array();
+		stderr.writefln("!!! show stderr: %s", output);
+		stderr.flush();
+	}
+
+	output = pipes.stdout.byLine.map!(n => n.to!string).array();
+	stdout.writefln("!!! show stdout: %s", output);
+	stdout.flush();
+}
 
 bool isExecutable(string path) {
 	version (Windows) {

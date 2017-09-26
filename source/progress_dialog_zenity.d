@@ -6,7 +6,7 @@
 
 module progress_dialog_zenity;
 
-import progress_dialog : ProgressDialogBase;
+import progress_dialog : ProgressDialogBase, use_log;
 
 
 class ProgressDialogZenity : ProgressDialogBase {
@@ -18,11 +18,7 @@ class ProgressDialogZenity : ProgressDialogBase {
 
 	override void show(void delegate() cb) {
 		import std.process : ProcessPipes, ProcessException, pipeProcess, Redirect, tryWait;
-		import std.algorithm : map;
-		import std.array : array;
-		import std.conv : to;
-		import std.string : format, split, strip;
-		import progress_dialog_helpers : programPaths;
+		import progress_dialog_helpers : programPaths, logProgramOutput;
 
 		string[] paths = programPaths(["zenity"]);
 		if (paths.length < 1) {
@@ -54,18 +50,13 @@ class ProgressDialogZenity : ProgressDialogBase {
 			return;
 		}
 
-/*
-		string[] output = pipes.stderr.byLine.map!(n => n.to!string).array();
-		stdout.writefln("!!! show stderr: %s", output);
-		stdout.flush();
-		output = pipes.stdout.byLine.map!(n => n.to!string).array();
-		stdout.writefln("!!! show stdout: %s", output);
-		stdout.flush();
-*/
 		_pipes = pipes;
 
 		try {
 			cb();
+			if (use_log) {
+				logProgramOutput(pipes, true);
+			}
 		} catch (Throwable err) {
 			if (_on_error_cb) _on_error_cb(err);
 		}
@@ -79,23 +70,17 @@ class ProgressDialogZenity : ProgressDialogBase {
 
 	override void close() {
 		import std.process : wait;
-		import std.algorithm : map;
-		import std.array : array;
-		import std.conv : to;
-		import std.stdio : stdout;
+		import progress_dialog_helpers : logProgramOutput;
 
 		this.setPercent(100);
-
-		//stdout.writefln("!!! called close");
 
 		if (wait(_pipes.pid) != 0) {
 			throw new Exception("Failed to close dialog");
 		}
 
-		string[] output = _pipes.stderr.byLine.map!(n => n.to!string).array();
-		stdout.writefln("!!! output: %s", output);
-		output = _pipes.stdout.byLine.map!(n => n.to!string).array();
-		stdout.writefln("!!! output: %s", output);
+		if (use_log) {
+			logProgramOutput(_pipes, false);
+		}
 	}
 
 	static bool isSupported() {

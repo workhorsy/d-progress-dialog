@@ -68,6 +68,7 @@ extern (C) int UIAppMain(string[] args) {
 module progress_dialog;
 
 bool is_sdl2_loadable = false;
+bool use_log = true;
 
 /++
 This should be called once at the start of a program. It generates the proper
@@ -105,6 +106,22 @@ mixin template RUN_MAIN() {
 			}
 		}
 	}
+}
+
+/++
+If true will print output of external program to console.
+Params:
+ is_logging = If true will print to output
++/
+public void setUseLog(bool is_logging) {
+	use_log = is_logging;
+}
+
+/++
+Returns if external program logging is on or off.
++/
+public bool getUseLog() {
+	return use_log;
 }
 
 abstract class ProgressDialogBase {

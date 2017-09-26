@@ -6,7 +6,7 @@
 
 module progress_dialog_kdialog;
 
-import progress_dialog : ProgressDialogBase;
+import progress_dialog : ProgressDialogBase, use_log;
 
 
 class ProgressDialogKDialog : ProgressDialogBase {
@@ -18,12 +18,7 @@ class ProgressDialogKDialog : ProgressDialogBase {
 
 	override void show(void delegate() cb) {
 		import std.process : ProcessPipes, ProcessException, pipeProcess, Redirect, tryWait;
-		import std.algorithm : map;
-		import std.array : array;
-		import std.conv : to;
-		import std.string : format, split, strip;
-		import std.stdio : stdout;
-		import progress_dialog_helpers : programPaths;
+		import progress_dialog_helpers : programPaths, logProgramOutput;
 
 		string[] paths = programPaths(["kdialog"]);
 		if (paths.length < 1) {
@@ -53,22 +48,13 @@ class ProgressDialogKDialog : ProgressDialogBase {
 			return;
 		}
 
-	///*
-		//string[] output = pipes.stderr.byLine.map!(n => n.to!string).array();
-		//stdout.writefln("!!! output: %s", output);
-		//stdout.flush();
-		string[] output = pipes.stdout.byLine.map!(n => n.to!string).array();
-		stdout.writefln("!!! show output: %s", output);
-		stdout.flush();
-		_qdbus_id = output[0].split("/ProgressDialog")[0].strip();
-		stdout.writefln("!!! _qdbus_id: %s", _qdbus_id);
-		stdout.flush();
-	//*/
-
 		_pipes = pipes;
 
 		try {
 			cb();
+			if (use_log) {
+				logProgramOutput(_pipes, true);
+			}
 		} catch (Throwable err) {
 			if (_on_error_cb) _on_error_cb(err);
 		}
@@ -76,12 +62,8 @@ class ProgressDialogKDialog : ProgressDialogBase {
 
 	override void setPercent(int percent) {
 		import std.process : ProcessPipes, ProcessException, pipeProcess, Redirect, tryWait, wait;
-		import std.algorithm : map;
-		import std.array : array;
-		import std.conv : to;
 		import std.string : format;
-		import std.stdio : stdout;
-		import progress_dialog_helpers : programPaths;
+		import progress_dialog_helpers : programPaths, logProgramOutput;
 
 		string[] paths = programPaths(["qdbus"]);
 		if (paths.length < 1) {
@@ -108,24 +90,17 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		}
 
 		if (wait(pipes.pid) != 0) {
-			string[] output = pipes.stderr.byLine.map!(n => n.to!string).array();
-			stdout.writefln("!!! setPercent output: %s", output);
-			stdout.flush();
-			output = pipes.stdout.byLine.map!(n => n.to!string).array();
-			stdout.writefln("!!! setPercent output: %s", output);
-			stdout.flush();
 			if (_on_error_cb) _on_error_cb(new Exception("Failed to set kdialog percent"));
+		}
+
+		if (use_log) {
+			logProgramOutput(pipes, false);
 		}
 	}
 
 	override void close() {
 		import std.process : ProcessPipes, ProcessException, pipeProcess, Redirect, tryWait, wait;
-		import std.algorithm : map;
-		import std.array : array;
-		import std.conv : to;
-		import std.string : format;
-		import std.stdio : stdout;
-		import progress_dialog_helpers : programPaths;
+		import progress_dialog_helpers : programPaths, logProgramOutput;
 
 		this.setPercent(100);
 
@@ -151,13 +126,11 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		}
 
 		if (wait(pipes.pid) != 0) {
-			string[] output = pipes.stderr.byLine.map!(n => n.to!string).array();
-			stdout.writefln("!!! setPercent output: %s", output);
-			stdout.flush();
-			output = pipes.stdout.byLine.map!(n => n.to!string).array();
-			stdout.writefln("!!! setPercent output: %s", output);
-			stdout.flush();
 			if (_on_error_cb) _on_error_cb(new Exception("Failed to close kdialog"));
+		}
+
+		if (use_log) {
+			logProgramOutput(pipes, true);
 		}
 	}
 
