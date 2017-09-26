@@ -23,7 +23,7 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		import std.conv : to;
 		import std.string : format, split, strip;
 		import std.stdio : stdout;
-		import helpers : programPaths;
+		import progress_dialog_helpers : programPaths;
 
 		string[] paths = programPaths(["kdialog"]);
 		if (paths.length < 1) {
@@ -81,7 +81,7 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		import std.conv : to;
 		import std.string : format;
 		import std.stdio : stdout;
-		import helpers : programPaths;
+		import progress_dialog_helpers : programPaths;
 
 		string[] paths = programPaths(["qdbus"]);
 		if (paths.length < 1) {
@@ -125,7 +125,7 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		import std.conv : to;
 		import std.string : format;
 		import std.stdio : stdout;
-		import helpers : programPaths;
+		import progress_dialog_helpers : programPaths;
 
 		this.setPercent(100);
 
@@ -162,11 +162,10 @@ class ProgressDialogKDialog : ProgressDialogBase {
 	}
 
 	static bool isSupported() {
-		import helpers : programPaths;
+		import progress_dialog_helpers : programPaths;
 		return programPaths(["kdialog"]).length > 0 && programPaths(["qdbus"]).length > 0;
 	}
 
 	string _qdbus_id;
 	ProcessPipes _pipes;
 }
-

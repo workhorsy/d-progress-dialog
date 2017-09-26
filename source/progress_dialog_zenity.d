@@ -22,7 +22,7 @@ class ProgressDialogZenity : ProgressDialogBase {
 		import std.array : array;
 		import std.conv : to;
 		import std.string : format, split, strip;
-		import helpers : programPaths;
+		import progress_dialog_helpers : programPaths;
 
 		string[] paths = programPaths(["zenity"]);
 		if (paths.length < 1) {
@@ -99,10 +99,9 @@ class ProgressDialogZenity : ProgressDialogBase {
 	}
 
 	static bool isSupported() {
-		import helpers : programPaths;
+		import progress_dialog_helpers : programPaths;
 		return programPaths(["zenity"]).length > 0;
 	}
 
 	ProcessPipes _pipes;
 }
-

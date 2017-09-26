@@ -4,7 +4,7 @@
 // https://github.com/workhorsy/d-progress-dialog
 
 
-module helpers;
+module progress_dialog_helpers;
 
 
 bool isExecutable(string path) {
@@ -60,5 +60,3 @@ string[] programPaths(string[] program_names) {
 
 	return paths;
 }
-
-
