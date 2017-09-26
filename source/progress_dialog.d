@@ -126,6 +126,9 @@ abstract class ProgressDialogBase {
 	void delegate(Throwable err) _on_error_cb;
 }
 
+/++
+The ProgressDialog class
++/
 class ProgressDialog {
 	import progress_dialog_zenity : ProgressDialogZenity;
 	import progress_dialog_kdialog : ProgressDialogKDialog;
@@ -136,8 +139,8 @@ class ProgressDialog {
 	Sets up the progress dialog with the desired title, and message. Does not
 	show it until the show method is called.
 	Params:
-	 title = The string to show in the message box title
-	 message = The string to show in the message box body
+	 title = The string to show in the progress dialog title
+	 message = The string to show in the progress dialog body
 	Throws:
 	 If it fails to find any programs of libraries to make a progress dialog with.
 	+/
