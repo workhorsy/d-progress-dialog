@@ -9,22 +9,24 @@ module progress_dialog_helpers;
 import std.process : ProcessPipes;
 
 
-void logProgramOutput(ProcessPipes pipes, bool include_stderr) {
+void logProgramOutput(ProcessPipes pipes) {
 	import std.algorithm : map;
 	import std.conv : to;
 	import std.stdio : stderr, stdout;
 	import std.array : array;
 	string[] output;
 
-	if (include_stderr) {
+	if (! pipes.stderr.eof) {
 		output = pipes.stderr.byLine.map!(n => n.to!string).array();
 		stderr.writefln("!!! show stderr: %s", output);
 		stderr.flush();
 	}
 
-	output = pipes.stdout.byLine.map!(n => n.to!string).array();
-	stdout.writefln("!!! show stdout: %s", output);
-	stdout.flush();
+	if (! pipes.stdout.eof) {
+		output = pipes.stdout.byLine.map!(n => n.to!string).array();
+		stdout.writefln("!!! show stdout: %s", output);
+		stdout.flush();
+	}
 }
 
 bool isExecutable(string path) {

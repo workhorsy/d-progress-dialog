@@ -53,7 +53,7 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		try {
 			cb();
 			if (use_log) {
-				logProgramOutput(_pipes, true);
+				logProgramOutput(_pipes);
 			}
 		} catch (Throwable err) {
 			if (_on_error_cb) _on_error_cb(err);
@@ -94,7 +94,7 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		}
 
 		if (use_log) {
-			logProgramOutput(pipes, false);
+			logProgramOutput(pipes);
 		}
 	}
 
@@ -130,7 +130,7 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		}
 
 		if (use_log) {
-			logProgramOutput(pipes, true);
+			logProgramOutput(pipes);
 		}
 	}
 

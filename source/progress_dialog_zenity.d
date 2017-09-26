@@ -55,7 +55,7 @@ class ProgressDialogZenity : ProgressDialogBase {
 		try {
 			cb();
 			if (use_log) {
-				logProgramOutput(pipes, true);
+				logProgramOutput(pipes);
 			}
 		} catch (Throwable err) {
 			if (_on_error_cb) _on_error_cb(err);
@@ -79,7 +79,7 @@ class ProgressDialogZenity : ProgressDialogBase {
 		}
 
 		if (use_log) {
-			logProgramOutput(_pipes, false);
+			logProgramOutput(_pipes);
 		}
 	}
 
