@@ -68,7 +68,7 @@ extern (C) int UIAppMain(string[] args) {
 module progress_dialog;
 
 bool is_sdl2_loadable = false;
-bool use_log = true;
+bool use_log = false;
 
 /++
 This should be called once at the start of a program. It generates the proper
