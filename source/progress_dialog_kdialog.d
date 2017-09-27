@@ -18,6 +18,10 @@ class ProgressDialogKDialog : ProgressDialogBase {
 
 	override void show(void delegate() cb) {
 		import std.process : ProcessPipes, ProcessException, pipeProcess, Redirect, tryWait;
+		import std.algorithm : map;
+		import std.array : array;
+		import std.conv : to;
+		import std.string : split, strip;
 		import progress_dialog_helpers : programPaths, logProgramOutput;
 
 		string[] paths = programPaths(["kdialog"]);
@@ -48,7 +52,10 @@ class ProgressDialogKDialog : ProgressDialogBase {
 			return;
 		}
 
+		// Get the qdbus id to send messages with
 		_pipes = pipes;
+		string[] output = _pipes.stdout.byLine.map!(n => n.to!string).array();
+		_qdbus_id = output[0].split("/ProgressDialog")[0].strip();
 
 		try {
 			cb();
