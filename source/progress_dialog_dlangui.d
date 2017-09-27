@@ -47,7 +47,7 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 			try {
 				cb();
 			} catch (Throwable err) {
-				if (_on_error_cb) _on_error_cb(err);
+				this.fireOnError(err);
 			}
 		});
 		composed.start();

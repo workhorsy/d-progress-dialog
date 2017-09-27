@@ -22,7 +22,7 @@ class ProgressDialogKDialog : ProgressDialogBase {
 
 		string[] paths = programPaths(["kdialog"]);
 		if (paths.length < 1) {
-			if (_on_error_cb) _on_error_cb(new Exception("Failed to find kdialog"));
+			this.fireOnError(new Exception("Failed to find kdialog"));
 			return;
 		}
 
@@ -38,13 +38,13 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		try {
 			pipes = pipeProcess(args, Redirect.stdin | Redirect.stdout | Redirect.stderr);
 		} catch (ProcessException err) {
-			if (_on_error_cb) _on_error_cb(err);
+			this.fireOnError(err);
 			return;
 		}
 
 		// Make sure the program did not terminate
 		if (tryWait(pipes.pid).terminated) {
-			if (_on_error_cb) _on_error_cb(new Exception("Failed to run kdialog"));
+			this.fireOnError(new Exception("Failed to run kdialog"));
 			return;
 		}
 
@@ -56,18 +56,19 @@ class ProgressDialogKDialog : ProgressDialogBase {
 				logProgramOutput(_pipes);
 			}
 		} catch (Throwable err) {
-			if (_on_error_cb) _on_error_cb(err);
+			this.fireOnError(err);
 		}
 	}
 
 	override void setPercent(int percent) {
 		import std.process : ProcessPipes, ProcessException, pipeProcess, Redirect, tryWait, wait;
 		import std.string : format;
+		import std.stdio;
 		import progress_dialog_helpers : programPaths, logProgramOutput;
 
 		string[] paths = programPaths(["qdbus"]);
 		if (paths.length < 1) {
-			if (_on_error_cb) _on_error_cb(new Exception("Failed to find qdbus"));
+			this.fireOnError(new Exception("Failed to find qdbus"));
 			return;
 		}
 
@@ -85,12 +86,12 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		try {
 			pipes = pipeProcess(args, Redirect.stdin | Redirect.stdout | Redirect.stderr);
 		} catch (ProcessException err) {
-			if (_on_error_cb) _on_error_cb(err);
+			this.fireOnError(err);
 			return;
 		}
 
 		if (wait(pipes.pid) != 0) {
-			if (_on_error_cb) _on_error_cb(new Exception("Failed to set kdialog percent"));
+			this.fireOnError(new Exception("Failed to set kdialog percent"));
 		}
 
 		if (use_log) {
@@ -106,7 +107,7 @@ class ProgressDialogKDialog : ProgressDialogBase {
 
 		string[] paths = programPaths(["qdbus"]);
 		if (paths.length < 1) {
-			if (_on_error_cb) _on_error_cb(new Exception("Failed to find qdbus"));
+			this.fireOnError(new Exception("Failed to find qdbus"));
 			return;
 		}
 
@@ -121,12 +122,12 @@ class ProgressDialogKDialog : ProgressDialogBase {
 		try {
 			pipes = pipeProcess(args, Redirect.stdin | Redirect.stdout | Redirect.stderr);
 		} catch (ProcessException err) {
-			if (_on_error_cb) _on_error_cb(err);
+			this.fireOnError(err);
 			return;
 		}
 
 		if (wait(pipes.pid) != 0) {
-			if (_on_error_cb) _on_error_cb(new Exception("Failed to close kdialog"));
+			this.fireOnError(new Exception("Failed to close kdialog"));
 		}
 
 		if (use_log) {

@@ -22,7 +22,7 @@ class ProgressDialogZenity : ProgressDialogBase {
 
 		string[] paths = programPaths(["zenity"]);
 		if (paths.length < 1) {
-			if (_on_error_cb) _on_error_cb(new Exception("Failed to find zenity"));
+			this.fireOnError(new Exception("Failed to find zenity"));
 			return;
 		}
 
@@ -40,13 +40,13 @@ class ProgressDialogZenity : ProgressDialogBase {
 		try {
 			pipes = pipeProcess(args, Redirect.stdin | Redirect.stdout | Redirect.stderr);
 		} catch (ProcessException err) {
-			if (_on_error_cb) _on_error_cb(err);
+			this.fireOnError(err);
 			return;
 		}
 
 		// Make sure the program did not terminate
 		if (tryWait(pipes.pid).terminated) {
-			if (_on_error_cb) _on_error_cb(new Exception("Failed to run zenity"));
+			this.fireOnError(new Exception("Failed to run zenity"));
 			return;
 		}
 
@@ -58,7 +58,7 @@ class ProgressDialogZenity : ProgressDialogBase {
 				logProgramOutput(pipes);
 			}
 		} catch (Throwable err) {
-			if (_on_error_cb) _on_error_cb(err);
+			this.fireOnError(err);
 		}
 	}
 

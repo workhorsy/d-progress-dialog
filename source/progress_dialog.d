@@ -134,6 +134,13 @@ abstract class ProgressDialogBase {
 		_on_error_cb = cb;
 	}
 
+	void fireOnError(Throwable err) {
+		auto old_cb = _on_error_cb;
+		_on_error_cb = null;
+
+		if (old_cb) old_cb(err);
+	}
+
 	void show(void delegate() cb);
 	void setPercent(int percent);
 	void close();
