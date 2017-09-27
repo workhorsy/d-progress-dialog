@@ -476,14 +476,19 @@
   <p class="para">
     It should work without requiring any 3rd party GUI toolkits. But will work with what it can find on your OS at runtime.
 <br><br>
+
 Tries to make a progress dialog with:
 <br><br>
+
 * DlangUI (win32 on Windows or SDL2 on Linux)
 <br><br>
+
 * Zenity (Gtk/Gnome)
 <br><br>
+
 * Kdialog (KDE)
 <br><br>
+
 Home page:
 <a href="https://github.com/workhorsy/d-progress-dialog">https://github.com/workhorsy/d-progress-dialog</a>
 
@@ -497,7 +502,8 @@ Home page:
 
 
   </p>
-</div><div class="ddoc_license">
+</div>
+<div class="ddoc_license">
   <h4>License</h4>
   <p class="para">
     Boost Software License - Version 1.0
@@ -533,7 +539,7 @@ Home page:
 	<span class="comment">// Show the progress dialog
 </span>	dialog.show({
 		<span class="comment">// Update the progress for 5 seconds
-</span>		<span class="keyword">ulong</span> percent = 0;
+</span>		<span class="keyword">int</span> percent = 0;
 		<span class="keyword">while</span> (percent &lt; 100) {
 			dialog.setPercent(percent);
 			percent += 20;
@@ -557,6 +563,7 @@ Home page:
 
   </p>
 </div>
+
 </section>
 <section class="section ddoc_module_members_section">
   <div class="ddoc_module_members">
@@ -585,8 +592,95 @@ Home page:
   <div class="ddoc_summary">
   <p class="para">
     This should be called once at the start of a program. It generates the proper
-main function for your environment (win32/posix/dmail) and boot straps the
-main loopd for the GUI. This will call your UIAppMain function when ready.
+main function for your environment (win32/posix/dmain) and boot straps the
+main loop for the GUI. This will call your UIAppMain function when ready.
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#setUseLog" id="setUseLog"><code class="code">setUseLog</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="setUseLog"></span>void <code class="code">setUseLog</code>(bool <code class="code">is_logging</code>);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    If <code class="code">true</code> will print output of external program to console.
+
+  </p>
+</div>
+<div class="ddoc_params">
+  <h4>Parameters</h4>
+  <table cellspacing="0" cellpadding="5" border="0" class="graybox">
+    <tbody>
+      <tr class="ddoc_param_row">
+  <td scope="ddoc_param_id">
+  <code class="code">
+    <em class="term">bool <code class="code">is_logging</code></em>
+  </code>
+</td>
+<td>
+  <div class="ddoc_param_desc">
+    <p class="para">
+      If <code class="code">true</code> will print to output
+    </p>
+  </div>
+</td>
+</tr>
+
+    </tbody>
+  </table>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#getUseLog" id="getUseLog"><code class="code">getUseLog</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="getUseLog"></span>bool <code class="code">getUseLog</code>();
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Returns if external program logging is on or off.
   </p>
 </div>
 
@@ -692,9 +786,10 @@ main loopd for the GUI. This will call your UIAppMain function when ready.
 <div class="ddoc_throws">
   <h4>Throws</h4>
   <p class="para">
-    If it fails to find any programs of libraries to make a progress dialog with.
+    If it fails to find any programs or libraries to make a progress dialog with.
   </p>
 </div>
+
 </section>
 
 </div>
@@ -779,7 +874,7 @@ main loopd for the GUI. This will call your UIAppMain function when ready.
   <div class="ddoc_summary">
   <p class="para">
     Shows the progress dialog. Will run the callback in a thread and
-	block until it is closed or reaches 100%.
+	block until it is closed or percent reaches 100.
   </p>
 </div>
 
@@ -799,7 +894,7 @@ main loopd for the GUI. This will call your UIAppMain function when ready.
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="ProgressDialog.setPercent"></span>void <code class="code">setPercent</code>(ulong <code class="code">percent</code>);
+            <span class="ddoc_anchor" id="ProgressDialog.setPercent"></span>void <code class="code">setPercent</code>(int <code class="code">percent</code>);
 
           </code>
         </p>
@@ -822,7 +917,7 @@ main loopd for the GUI. This will call your UIAppMain function when ready.
       <tr class="ddoc_param_row">
   <td scope="ddoc_param_id">
   <code class="code">
-    <em class="term">ulong <code class="code">percent</code></em>
+    <em class="term">int <code class="code">percent</code></em>
   </code>
 </td>
 <td>
