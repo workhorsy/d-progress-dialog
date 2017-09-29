@@ -1,5 +1,5 @@
 
-* Release 0.2.0
+09/29/2017 Release 0.2.0
 	* Fixed Bug #2: SDL detection is dependent on RUN_MAIN main loop
 	* Fixed Bug #3: Main should not be generated for unit tests
 
