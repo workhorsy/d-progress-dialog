@@ -19,7 +19,7 @@ Tries to make a progress dialog with:
 Home page:
 $(LINK https://github.com/workhorsy/d-progress-dialog)
 
-Version: 0.1.0
+Version: 0.2.0
 
 License:
 Boost Software License - Version 1.0
@@ -70,6 +70,22 @@ module progress_dialog;
 bool is_sdl2_loadable = false;
 bool use_log = false;
 
+static this() {
+	import std.stdio : stdout;
+
+	// Figure out if the SDL2 libraries can be loaded
+	version (Have_derelict_sdl2) {
+		import derelict.sdl2.sdl : DerelictSDL2, SharedLibVersion, SharedLibLoadException;
+		try {
+			DerelictSDL2.load(SharedLibVersion(2, 0, 2));
+			is_sdl2_loadable = true;
+			stdout.writefln("SDL was found ...");
+		} catch (SharedLibLoadException) {
+			stdout.writefln("SDL was NOT found ...");
+		}
+	}
+}
+
 /++
 This should be called once at the start of a program. It generates the proper
 main function for your environment (win32/posix/dmain) and boot straps the
@@ -83,19 +99,7 @@ mixin template RUN_MAIN() {
 	// On Linux use a custom main that checks if SDL is installed
 	} else {
 		int main(string[] args) {
-			// Figure out if the SDL2 libraries can be loaded
-			version (Have_derelict_sdl2) {
-				import derelict.sdl2.sdl : DerelictSDL2, SharedLibVersion, SharedLibLoadException;
-				import progress_dialog : is_sdl2_loadable;
-				try {
-					DerelictSDL2.load(SharedLibVersion(2, 0, 2));
-					is_sdl2_loadable = true;
-					stdout.writefln("SDL was found ...");
-				} catch (SharedLibLoadException) {
-					stdout.writefln("SDL was NOT found ...");
-				}
-			}
-
+			import progress_dialog : is_sdl2_loadable;
 			// If SDL2 can be loaded, start the SDL2 main
 			if (is_sdl2_loadable) {
 				import dlangui.platforms.sdl.sdlapp : sdlmain;
