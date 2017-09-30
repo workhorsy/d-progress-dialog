@@ -1,22 +1,11 @@
 {
 	"name": "example",
 	"targetType": "executable",
-	"sourcePaths": ["../../source/"],
 	"mainSourceFile": "example.d",
-	"sourceFiles-windows": ["../../source/win_app.def"],
-
+	"sourceFiles-windows": ["win_app.def"],
 
 	"dependencies": {
-		"d-glob": "~>0.3.0",
-		"dlangui": "~>0.9.141"
+		"d-progress-dialog": { "path": "../../" },
+		"dlangui": "~>0.9.141",
 	},
-
-	"configurations": [
-		{
-		"name": "default",
-			"subConfigurations": {
-				"dlangui": "minimal"
-			}
-		}
-	]
 }
