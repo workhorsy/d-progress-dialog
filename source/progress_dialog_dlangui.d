@@ -30,7 +30,7 @@ class ProgressDialogDlangUI : ProgressDialogBase {
 		vlayout.margins = 20;
 		vlayout.padding = 10;
 
-		auto text = new TextWidget(null, _message.to!dstring);
+		auto text = new MultilineTextWidget(null, _message.to!dstring);
 
 		_progress_bar = new ProgressBarWidget();
 		_progress_bar.progress = 300;
