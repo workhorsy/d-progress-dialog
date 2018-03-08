@@ -75,7 +75,8 @@ static this() {
 
 	// Figure out if the SDL2 libraries can be loaded
 	version (Have_derelict_sdl2) {
-		import derelict.sdl2.sdl : DerelictSDL2, SharedLibVersion, SharedLibLoadException;
+		import derelict.util.exception : SharedLibLoadException;
+		import derelict.sdl2.sdl : DerelictSDL2, SharedLibVersion;
 		try {
 			DerelictSDL2.load(SharedLibVersion(2, 0, 2));
 			is_sdl2_loadable = true;
