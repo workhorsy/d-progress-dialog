@@ -6,6 +6,6 @@
 
 	"dependencies": {
 		"d-progress-dialog": { "path": "../../" },
-		"dlangui": "~>0.9.141",
-	},
+		"dlangui": "~>0.9.141"
+	}
 }
